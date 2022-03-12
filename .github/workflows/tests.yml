@@ -1,13 +1,8 @@
-name: Laravel CI
+laravel-tests:
 
-on:
-  pull_request:
-    branches: [ master, staging ]
 
-jobs:
-  laravel-tests:
+  runs-on: ubuntu-latest
 
-    runs-on: ubuntu-latest
 
-    steps:
+  steps:
     - uses: actions/checkout@v2
