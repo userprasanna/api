@@ -2,17 +2,20 @@ name: Build
 on: [push]
  
 jobs:
-  build-js:
-    name: Build JS
-    runs-on: ubuntu-18.04
-    container: 'ohseemedia/laravel-ci:7.3'
-    steps:
-      - uses: actions/checkout@v1
   build-php:
     name: Build PHP
     runs-on: ubuntu-18.04
     container: 'ohseemedia/laravel-ci:7.3'
     steps:
+      - name: Run composer install
+        run: composer install -n --prefer-dist
+        env:
+          APP_ENV: testing
+
+      - name: Prepare Laravel Application
+        run: |
+          cp .env.example .env
+          php artisan key:generate
       - uses: actions/checkout@v1
       - name: Configure application
         run: |
