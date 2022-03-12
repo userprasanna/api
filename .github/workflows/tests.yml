@@ -1,46 +1,34 @@
-name: Tests (PHP)
-
-on: [push]
-
+on: push
+name: CI
 jobs:
-  tests:
-    name: Run tests
+  phpunit:
     runs-on: ubuntu-latest
+    container:
+      image: kirschbaumdevelopment/laravel-test-runner:7.3
+ 
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: test
+        ports:
+          - 33306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+ 
     steps:
-      - uses: actions/checkout@v1
-
-      - name: Cache composer dependencies
-        uses: actions/cache@v1
-        with:
-          path: vendor
-          key: composer-${{ hashFiles('composer.lock') }}
-
-      - name: Run composer install
-        run: composer install -n --prefer-dist
-        env:
-          APP_ENV: testing
-
-      - name: Prepare Laravel Application
-        run: |
-          cp .env.example .env
-          php artisan key:generate
-      - name: Cache yarn dependencies
-        uses: actions/cache@v1
-        with:
-          path: node_modules
-          key: yarn-${{ hashFiles('yarn.lock') }}
-
-      - name: Run yarn
-        run: yarn && yarn dev
-
-      - name: Run tests
-        run: ./vendor/bin/phpunit
-        env:
-          APP_ENV: testing
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@master
-        if: failure()
-        with:
-          name: Logs
-          path: ./storage/logs
+    - uses: actions/checkout@v1
+      with:
+        fetch-depth: 1
+ 
+    - name: Install composer dependencies
+      run: |
+        composer install --no-scripts
+ 
+    - name: Prepare Laravel Application
+      run: |
+        cp .env.ci .env
+        php artisan key:generate
+ 
+    - name: Run Testsuite
+      run: vendor/bin/phpunit tests/
