@@ -9,14 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
-    - name: Copy ENV Laravel Configuration for CI
-      run: php -r "file_exists('.env') || copy('.env.ci', '.env');"
-    - name: Generate key
-      run: php artisan key:generate
-    - name: Create DB and schemas
-      run: |
-        mkdir -p database
-        touch database/database.sqlite
-        php artisan migrate
+    - name: laravel test
+      run: php artisan test
     - name: Execute tests (Unit and Feature tests) via PHPUnit
       run: vendor/bin/phpunit
