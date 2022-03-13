@@ -2,12 +2,15 @@ name: Laravel CI
 
 on:
   push:
+    paths-ignore:
+      - README.md
+      - .github/**
     branches:
       - main
 
 jobs:
-  laravel-tests:
-
+  build-job:
+    name: Build
     runs-on: ubuntu-latest
 
     steps:
@@ -45,19 +48,21 @@ jobs:
         DB_DATABASE: database/database.sqlite
       run: ./vendor/bin/phpunit
 
-    deploy:
-      name: Deploy to EC2 on master branch push
-      runs-on: ubuntu-latest
+  deploy-job:
+    name: Deploy to EC2 on master branch push
+    needs:
+      - build-job
+    runs-on: ubuntu-latest
 
-      steps:
-      - name: Checkout the files
-        uses: actions/checkout@v2
+    steps:
+    - name: Checkout the files
+      uses: actions/checkout@v2
 
-      - name: Deploy to Server 1
-        uses: easingthemes/ssh-deploy@main
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
-          REMOTE_HOST: ${{ secrets.HOST_DNS }}
-          REMOTE_USER: "ec2-user"
-          TARGET: "/var/www/html"
-          AWS_DEFAULT_REGION: "eu-east-1"
+    - name: Deploy to Server 1
+      uses: easingthemes/ssh-deploy@main
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
+        REMOTE_HOST: ${{ secrets.HOST_DNS }}
+        REMOTE_USER: ${{ secrets.EC2_USER }}
+        TARGET: ${{ secrets.TARGET_DIR }}
+        AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
