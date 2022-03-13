@@ -1,10 +1,9 @@
-name: Laravel CI
+name: Development
 
 on:
   push:
     paths-ignore:
       - README.md
-      - .github/**
     branches:
       - main
 
