@@ -57,6 +57,7 @@ jobs:
     steps:
     - name: Checkout the files
       uses: actions/checkout@v2
+    - name : pull files from main
       run: git pull origin main
 
     - name: Deploy to Ec2
