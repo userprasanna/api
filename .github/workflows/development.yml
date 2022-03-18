@@ -42,15 +42,14 @@ jobs:
       run: npm install
     - name: Minify CSS and JS files
       run: npm run prod
-  test-job:
-    - name: Unit Test
+    - name: Run unit tests via PHPUnit
       env:
         DB_CONNECTION: sqlite
         DB_DATABASE: database/database.sqlite
       run: ./vendor/bin/phpunit
 
   deploy-job:
-    name: Deployment
+    name: Ec2 Deployment
     needs:
       - build-job
     runs-on: ubuntu-latest
