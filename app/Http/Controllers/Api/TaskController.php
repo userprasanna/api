@@ -37,7 +37,7 @@ class TaskController extends Controller
 
     public function getAllTasks() {
       $tasks = Task::get(['key','value','datetime']);
-      return response()->json(array("data"=>$tasks), (!empty($tasks)) ? STATUS_200 : STATUS_404);
+      return response()->json(array("datas"=>$tasks), (!empty($tasks)) ? STATUS_200 : STATUS_404);
     }
 
     public function getTask($key) {
