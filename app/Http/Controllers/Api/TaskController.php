@@ -36,7 +36,7 @@ class TaskController extends Controller
     }
 
     public function getAllTasks() {
-      $tasks = Task::get(['key','value','datetime']);
+      $tasks = Task::get(['key','value','datetime','created_at']);
       return response()->json(array("data"=>$tasks), (!empty($tasks)) ? STATUS_200 : STATUS_404);
     }
 
